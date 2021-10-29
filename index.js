@@ -41,8 +41,8 @@ client.connect((err) => {
         res.send(results[0]);
       });
   });
-  //add product
-  app.post("/addProducts", (req, res) => {
+  //add Service
+  app.post("/addServices", (req, res) => {
     console.log(req.body);
     servicesCollection.insertOne(req.body).then((documents) => {
       res.send(documents.insertedId);
@@ -50,15 +50,21 @@ client.connect((err) => {
     });
   });
 
-  //delete product from the database
-  app.delete("/deleteProduct/:id", async (req, res) => {
-    console.log(req.params.id);
+  //delete services from the database
+  // app.delete("/deleteService/:id", async (req, res) => {
+  //   console.log(req.params.id);
 
-    servicesCollection
-      .deleteOne({ _id: ObjectId(req.params.id) })
-      .then((result) => {
-        res.send(result);
-      });
+  //   ordersCollection
+  //     .deleteOne({ _id: ObjectId(req.params.id) })
+  //     .then((result) => {
+  //       res.send(result);
+  //     });
+  // });
+  app.delete("/services/:id", async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: ObjectId(id) };
+    const result = await ordersCollection.deleteOne(query);
+    res.json(result);
   });
 
   //update product
