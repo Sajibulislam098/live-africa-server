@@ -86,8 +86,8 @@ async function run() {
     servicesCollection
       .updateOne(filter, {
         $set: {
+          image: updatedInfo.img,
           name: updatedInfo.name,
-          price: updatedInfo.price,
           description: updatedInfo.description,
         },
       })
