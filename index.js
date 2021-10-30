@@ -20,12 +20,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
-client.connect((err) => {
-  const servicesCollection = client.db("liveAfrica").collection("services");
-  const ordersCollection = client.db("liveAfrica").collection("orders");
 
   //  make route and get data
-  app.get("/services", async (req, res) => {
+async function run() {
+  try {
+    
+    await client.connect()
+      const servicesCollection = client.db("liveAfrica").collection("services");
+      const ordersCollection = client.db("liveAfrica").collection("orders");
+    ;
+    app.get("/services", async (req, res) => {
     servicesCollection.find({}).toArray((err, results) => {
       res.send(results);
     });
@@ -61,6 +65,12 @@ client.connect((err) => {
   //     });
   // });
   app.delete("/services/:id", async (req, res) => {
+    const id = req.params.id;
+    const query = { _id: ObjectId(id) };
+    const result = await servicesCollection.deleteOne(query);
+    res.json(result);
+  });
+  app.delete("/servicesOrders/:id", async (req, res) => {
     const id = req.params.id;
     const query = { _id: ObjectId(id) };
     const result = await ordersCollection.deleteOne(query);
@@ -103,6 +113,10 @@ client.connect((err) => {
         res.send(results);
       });
   });
-});
+} finally {
+  //   await client.close();
+}
+}
+run().catch(console.dir);
 
 app.listen(process.env.PORT || port);
